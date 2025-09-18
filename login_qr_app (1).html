@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppHub - Login & QR Access</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 600px;
+        }
+
+        .login-form-section {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .qr-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .form-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            background: #f0f0f0;
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab-btn.active {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            color: #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .forgot-password a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .qr-code-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .qr-placeholder {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .app-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        .app-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .app-link:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .feature-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .login-container {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+
+            .qr-section {
+                order: -1;
+                padding: 2rem;
+            }
+
+            .login-form-section {
+                padding: 2rem;
+            }
+
+            .logo h1 {
+                font-size: 2rem;
+            }
+
+            .qr-code {
+                width: 150px;
+                height: 150px;
+            }
+
+            .app-links {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        .demo-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .demo-info h4 {
+            margin-bottom: 0.5rem;
+            color: #4ade80;
+        }
+
+        .demo-info p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Login Form Section -->
+        <div class="login-form-section">
+            <div class="logo">
+                <h1>AppHub</h1>
+                <p>Secure Access Portal</p>
+            </div>
+
+            <!-- Demo Information -->
+            <div class="demo-info">
+                <h4>Demo Credentials</h4>
+                <p>Username: demo@apphub.com<br>Password: demo123</p>
+            </div>
+
+            <!-- Alert Messages -->
+            <div id="alertContainer"></div>
+
+            <!-- Form Tabs -->
+            <div class="form-tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+                <button class="tab-btn" onclick="switchTab('register')">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <div class="password-container">
+                        <input type="password" id="loginPassword" name="password" required>
+                        <span class="password-toggle" onclick="togglePassword('loginPassword')">👁️</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" id="loginBtn">
+                    <span class="btn-text">Sign In</span>
+                </button>
+
+                <div class="forgot-password">
+                    <a href="#" onclick="showForgotPassword()">Forgot your password?</a>
+                </div>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form" style="display: none;">
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerEmail">Email Address</label>
+                    <input type="email" id="registerEmail" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <div class="password-container">
+                        <input type="password" id="registerPassword" name="password" required minlength="6">
+                        <span class="password-toggle" onclick="togglePassword('registerPassword')">👁️</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="password-container">
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        <span class="password-toggle" onclick="togglePassword('confirmPassword')">👁️</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" id="registerBtn">
+                    <span class="btn-text">Create Account</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- QR Code Section -->
+        <div class="qr-section">
+            <h2>Quick Access</h2>
+            <p>Scan QR code to open the mobile app</p>
+
+            <div class="qr-code-container">
+                <div class="qr-code" id="qrCode">
+                    <div class="qr-placeholder">QR Code will appear here</div>
+                </div>
+            </div>
+
+            <button class="btn" onclick="generateQRCode()" style="background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.3);">
+                Generate QR Code
+            </button>
+
+            <div class="app-links">
+                <a href="#" class="app-link" onclick="openApp('android')">📱 Android App</a>
+                <a href="#" class="app-link" onclick="openApp('ios')">🍎 iOS App</a>
+            </div>
+
+            <ul class="feature-list">
+                <li>Secure biometric login</li>
+                <li>Offline access</li>
+                <li>Push notifications</li>
+                <li>Cloud sync</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // User data storage (in memory for demo)
+        let users = [
+            { email: 'demo@apphub.com', password: 'demo123', name: 'Demo User' }
+        ];
+
+        // Current user session
+        let currentUser = null;
+
+        // Switch between login and register tabs
+        function switchTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const tabBtns = document.querySelectorAll('.tab-btn');
+
+            // Update tab buttons
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Show/hide forms
+            if (tab === 'login') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+            }
+
+            // Clear alerts
+            clearAlerts();
+        }
+
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const toggle = input.nextElementSibling;
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                toggle.textContent = '👁️';
+            }
+        }
+
+        // Show alert messages
+        function showAlert(message, type = 'error') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            
+            container.innerHTML = '';
+            container.appendChild(alert);
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // Clear alerts
+        function clearAlerts() {
+            document.getElementById('alertContainer').innerHTML = '';
+        }
+
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            // Show loading state
+            loginBtn.innerHTML = '<div class="loading"></div> Signing In...';
+            loginBtn.disabled = true;
+
+            // Simulate API call delay
+            setTimeout(() => {
+                const user = users.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    currentUser = user;
+                    showAlert(`Welcome back, ${user.name}! Login successful.`, 'success');
+                    
+                    // Simulate redirect to app
+                    setTimeout(() => {
+                        showAlert('Redirecting to dashboard...', 'success');
+                        generateQRCode(); // Auto-generate QR code after login
+                    }, 1500);
+                } else {
+                    showAlert('Invalid email or password. Please try again.');
+                }
+
+                // Reset button state
+                loginBtn.innerHTML = 'Sign In';
+                loginBtn.disabled = false;
+            }, 1500);
+        });
+
+        // Handle register form submission
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const registerBtn = document.getElementById('registerBtn');
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match.');
+                return;
+            }
+
+            // Check if user already exists
+            if (users.find(u => u.email === email)) {
+                showAlert('User with this email already exists.');
+                return;
+            }
+
+            // Show loading state
+            registerBtn.innerHTML = '<div class="loading"></div> Creating Account...';
+            registerBtn.disabled = true;
+
+            // Simulate API call delay
+            setTimeout(() => {
+                const newUser = { email, password, name };
+                users.push(newUser);
+                currentUser = newUser;
+                
+                showAlert(`Account created successfully! Welcome, ${name}.`, 'success');
+                
+                // Switch to login tab and pre-fill email
+                setTimeout(() => {
+                    switchTab('login');
+                    document.getElementById('loginEmail').value = email;
+                    generateQRCode(); // Auto-generate QR code after registration
+                }, 1500);
+
+                // Reset button state
+                registerBtn.innerHTML = 'Create Account';
+                registerBtn.disabled = false;
+            }, 1500);
+        });
+
+        // Generate QR Code
+        function generateQRCode() {
+            const qrContainer = document.getElementById('qrCode');
+            
+            // Create a simple QR code representation (in real app, use QR library)
+            const qrData = {
+                appUrl: 'https://apphub.app/mobile',
+                userId: currentUser ? currentUser.email : 'guest',
+                timestamp: Date.now(),
+                action: 'open_app'
+            };
+
+            // Simulate QR code generation
+            qrContainer.innerHTML = `
+                <div style="width: 100%; height: 100%; background: 
+                    linear-gradient(45deg, #000 25%, transparent 25%), 
+                    linear-gradient(-45deg, #000 25%, transparent 25%), 
+                    linear-gradient(45deg, transparent 75%, #000 75%), 
+                    linear-gradient(-45deg, transparent 75%, #000 75%);
+                    background-size: 20px 20px;
+                    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 10px;">
+                    <div style="background: white; padding: 20px; border-radius: 5px; font-size: 12px; text-align: center;">
+                        <strong>AppHub</strong><br>
+                        Mobile Access<br>
+                        <small>${new Date().toLocaleTimeString()}</small>
+                    </div>
+                </div>
+            `;
+
+            showAlert('QR Code generated! Scan with your mobile device.', 'success');
+        }
+
+        // Open mobile app
+        function openApp(platform) {
+            const appUrls = {
+                android: 'https://play.google.com/store/apps/details?id=com.apphub.mobile',
+                ios: 'https://apps.apple.com/app/apphub/id123456789'
+            };
+
+            showAlert(`Opening ${platform} app store...`, 'success');
+            
+            // In a real app, this would attempt to open the mobile app first, then fallback to store
+            setTimeout(() => {
+                // Try to open the app using custom URL scheme
+                const customUrl = platform === 'android' ? 'apphub://open' : 'apphub://open';
+                
+                // Create a hidden link to test if app is installed
+                const link = document.createElement('a');
+                link.href = customUrl;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                
+                try {
+                    link.click();
+                    showAlert('Opening AppHub mobile app...', 'success');
+                } catch (error) {
+                    // App not installed, redirect to store
+                    showAlert(`App not installed. Redirecting to ${platform} store...`, 'success');
+                    // window.open(appUrls[platform], '_blank');
+                }
+                
+                document.body.removeChild(link);
+            }, 1000);
+        }
+
+        // Show forgot password dialog
+        function showForgotPassword() {
+            const email = prompt('Enter your email address to reset password:');
+            if (email) {
+                showAlert('Password reset link sent to your email!', 'success');
+            }
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-focus on email field
+            document.getElementById('loginEmail').focus();
+            
+            // Add some demo functionality
+            setTimeout(() => {
+                showAlert('Try the demo credentials: demo@apphub.com / demo123', 'success');
+            }, 2000);
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Alt + Q to generate QR code
+            if (e.altKey && e.key === 'q') {
+                e.preventDefault();
+                generateQRCode();
+            }
+            
+            // Alt + 1 for Android app
+            if (e.altKey && e.key === '1') {
+                e.preventDefault();
+                openApp('android');
+            }
+            
+            // Alt + 2 for iOS app
+            if (e.altKey && e.key === '2') {
+                e.preventDefault();
+                openApp('ios');
+            }
+        });
+    </script>
+</body>
+</html>
